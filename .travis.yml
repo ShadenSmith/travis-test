@@ -2,3 +2,10 @@
 language: c
 sudo: false
 
+
+addons:
+  apt:
+    packages:
+      - gfortran
+      - libatlas-dev
+
