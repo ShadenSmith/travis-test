@@ -50,6 +50,21 @@ else()
 endif()
 
 
+
+if (DEFINED FLT_WIDTH)
+  if (${FLT_WIDTH} STREQUAL "single")
+    add_definitions(-DVAL_TYPEWIDTH=32)
+  elseif (${FLT_WIDTH} STREQUAL "double")
+    add_definitions(-DVAL_TYPEWIDTH=64)
+  else()
+    message(FATAL_ERROR "Precision '${FLT_WIDTH}' not recognized.\
+      Choose between {single, double}.")
+  endif()
+  message("Using ${FLT_WIDTH} precision floating point numbers.")
+endif()
+
+
+
 add_definitions(-D_GNU_SOURCE)
 
 set(C_DEFINES "${C_DEFINES}")
@@ -59,6 +74,9 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -funroll-loops")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ftree-vectorize")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fstrict-aliasing")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
+
+# get rid of dgemm warning
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-implicit-function-declaration")
 
 file(GLOB MY_SOURCES main.c)
 add_executable(test_bin ${MY_SOURCES})

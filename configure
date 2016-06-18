@@ -1,9 +1,30 @@
 #!/bin/bash
 
-BUILDDIR=build
+
+# parse arguments
+for i in "${@}"; do
+  case "${i}" in
+    --with-precision=*)
+      PRECISION=${i#*=}
+      if [ "${PRECISION}" == "single" ]; then
+        CONFIG_FLAGS="${CONFIG_FLAGS} -DFLT_WIDTH=single"
+      elif [ "${PRECISION}" == "double" ]; then
+        CONFIG_FLAGS="${CONFIG_FLAGS} -FLT_WIDTH=double"
+      else
+        die "Unknown precision: ${PRECISION}. Choose between {single,double}."
+      fi
+    ;;
+
+    # bad argument
+    *)
+    die "Unknown option '${i}'"
+    ;;
+  esac
+done
 
 
 # clean out build directory if it exists
+BUILDDIR=build
 if [[ -d "${BUILDDIR}" ]]; then
   echo "Removing old build directory '${BUILDDIR}'..."
   rm -rf "${BUILDDIR}"
@@ -15,7 +36,8 @@ mkdir -vp "${BUILDDIR}" || \
 
 pushd ${BUILDDIR}
 
-cmake ../ ; popd
+
+cmake ${CONFIG_FLAGS} ../ ; popd
 
 # create proxy makefile
 (

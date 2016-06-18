@@ -2,6 +2,9 @@
 language: c
 sudo: false
 
+compiler:
+  - gcc
+  - clang
 
 addons:
   apt:
@@ -9,3 +12,6 @@ addons:
       - gfortran
       - libatlas-dev
 
+script:
+  - ./configure --with-precision=single && make && make test
+  - ./configure --with-precision=double && make && make test
