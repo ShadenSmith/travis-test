@@ -1,4 +1,6 @@
 
+#include "timer.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -25,6 +27,9 @@ void my_dgemm(
     int const N,
     int const K)
 {
+  sp_timer_t timer;
+  timer_fstart(&timer);
+
   for(int j=0; j < N; ++j) {
     for(int i=0; i < M; ++i) {
       C[i + (j*M)] = 0.;
@@ -33,6 +38,9 @@ void my_dgemm(
       }
     }
   }
+
+  timer_stop(&timer);
+  printf("my_dgemm: %0.3fs\n", timer.seconds);
 }
 
 
@@ -45,6 +53,9 @@ void la_dgemm(
     int N,
     int K)
 {
+  sp_timer_t timer;
+  timer_fstart(&timer);
+
   char transA = 'N';
   char transB = 'N';
   val_t alpha = 1.;
@@ -62,6 +73,8 @@ void la_dgemm(
       B, &ldb,
       &beta,
       C, &ldc);
+  timer_stop(&timer);
+  printf("la_dgemm: %0.3fs\n", timer.seconds);
 }
 
 
@@ -71,11 +84,9 @@ int main(
     int argc,
     char ** argv)
 {
-  int const M = 128;
-  int const N = 457;
-  int const K = 11;
-
-  printf("sizeof(val_t) = %zd\n", sizeof(val_t));
+  int const M = 138;
+  int const N = 1138;
+  int const K = 35;
 
   /* all column major */
   val_t * A = malloc(M * K * sizeof(*A));
@@ -85,22 +96,32 @@ int main(
 
   /* initialize A and B */
   for(int x=0; x < M * K; ++x) {
-    A[x] = x + 1.138;
+    A[x] = x * 0.001138;
+    if(A[x] > 1) {
+      A[x] = 0.98;
+    }
   }
   for(int x=0; x < N * K; ++x) {
-    B[x] = x + 0.247;
+    B[x] = x * 0.0247;
+    if(B[x] > 1) {
+      B[x] = 0.98;
+    }
   }
 
   my_dgemm(A, B, Cx, M, N, K);
   la_dgemm(A, B, Cy, M, N, K);
 
-  val_t norm = 0.;
+  long double cx_norm = 0.;
+  long double cy_norm = 0.;
+  long double diff_norm = 0.;
   for(int x=0; x < M * N; ++x) {
-    val_t const diff = Cx[x] - Cy[x];
-    norm += diff * diff;
+    long double const diff = Cx[x] - Cy[x];
+    diff_norm += diff * diff;
+    cx_norm += Cx[x] * Cx[x];
+    cy_norm += Cy[x] * Cy[x];
   }
-  if(norm > 1e-12) {
-    printf("ERROR: ||A - B||_F^2 = %0.3e\n", norm);
+  if(diff_norm > 1e-6) {
+    fprintf(stderr, "ERROR: ||A - B||_F^2 = %0.3Le\n", diff_norm);
     return EXIT_FAILURE;
   }
 
