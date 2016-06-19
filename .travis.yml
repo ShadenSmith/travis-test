@@ -19,5 +19,5 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update && brew install homebrew/science/openblas ; fi
 
 script:
-  - ./configure --with-precision=single && make && ./build/travis-test
-  - ./configure --with-precision=double && make && ./build/travis-test
+  - ./configure --with-precision=single && make && make test
+  - ./configure --with-precision=double && make && make test
