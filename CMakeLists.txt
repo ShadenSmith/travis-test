@@ -56,6 +56,7 @@ add_definitions(-D_GNU_SOURCE)
 
 set(C_DEFINES "${C_DEFINES}")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${C_DEFINES}")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -funroll-loops")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ftree-vectorize")
@@ -65,7 +66,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
 # get rid of dgemm warning
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-implicit-function-declaration")
 
-file(GLOB MY_SOURCES main.c)
+file(GLOB MY_SOURCES src/*.c)
 add_executable(test_bin ${MY_SOURCES})
 set_target_properties(test_bin PROPERTIES OUTPUT_NAME travis-test)
 target_link_libraries(test_bin ${MY_LIBS})
