@@ -5,19 +5,6 @@ cmake_minimum_required(VERSION 2.8.0)
 # ALL LIBRARIES -- will concatenate to this
 set(MY_LIBS "")
 
-# setup Fortran
-enable_language(Fortran)
-if (NOT DEFINED CMAKE_Fortran_COMPILER)
-  message(FATAL_ERROR "Fortran compiler not found!")
-endif()
-
-if(${CMAKE_Fortran_COMPILER_ID} STREQUAL "Intel")
-  set(MY_LIBS ${MY_LIBS} ifcore)
-else()
-  set(MY_LIBS ${MY_LIBS} gfortran)
-endif()
-
-
 if (DEFINED USER_LAPACK_LIB)
   message("Using user supplied LAPACK=${USER_LAPACK_LIB}")
   set(MY_LIBS ${MY_LIBS} ${USER_LAPACK_LIB})
