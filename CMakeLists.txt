@@ -70,7 +70,9 @@ file(GLOB MY_SOURCES src/*.c)
 add_executable(test_bin ${MY_SOURCES})
 set_target_properties(test_bin PROPERTIES OUTPUT_NAME travis-test)
 target_link_libraries(test_bin ${MY_LIBS})
-
+if(UNIX AND NOT APPLE)
+    target_link_libraries(test_bin rt)
+endif()
 
 # turn on testing
 enable_testing()
