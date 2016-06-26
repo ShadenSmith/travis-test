@@ -63,6 +63,12 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ftree-vectorize")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fstrict-aliasing")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
 
+ # turn on test coverage
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --coverage")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g")
+
+
 # get rid of dgemm warning
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-implicit-function-declaration")
 
